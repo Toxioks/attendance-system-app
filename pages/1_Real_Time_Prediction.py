@@ -4,16 +4,17 @@ from streamlit_webrtc import webrtc_streamer
 import av
 import time
 
+# Insert brand logo into sidebar
+st.sidebar.image("logo.png", use_column_width=True)
+
 # st.set_page_config(page_title='Predictions')
-st.subheader('Real-Time Attendance System')
+st.header('FACE:blue[ATTEND]',divider='rainbow')
+st.subheader('Real-Time Clock-in')
 
 
-# Retrive the data from Redis Database
-with st.spinner('Retriving Data from Redis DB ...'):    
-    redis_face_db = face_rec.retrive_data(name='academy:register')
-    st.dataframe(redis_face_db)
-    
-st.success("Data sucessfully retrived from Redis")
+with st.spinner('Retrieving data from database...'):
+    redis_face_db = face_rec.retrieve_data(name='academy:register')
+st.success("Data successfully retrieved from database",icon="✅")
 
 # time 
 waitTime = 30 # time in sec

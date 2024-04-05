@@ -5,9 +5,11 @@ import numpy as np
 from streamlit_webrtc import webrtc_streamer
 import av
 
+# Insert brand logo into sidebar
+st.sidebar.image("logo.png", use_column_width=True)
 
-# st.set_page_config(page_title='Registration Form')
-st.subheader('Registration Form')
+st.header('FACE:blue[ATTEND]',divider='rainbow')
+st.subheader('User Registration')
 
 ## init registration form
 registration_form = face_rec.RegistrationForm()

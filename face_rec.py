@@ -7,6 +7,7 @@ import redis
 # insight face
 from insightface.app import FaceAnalysis
 from sklearn.metrics import pairwise
+
 # time
 import time
 from datetime import datetime
@@ -25,18 +26,18 @@ r = redis.StrictRedis(host=hostname,
                       port=portnumber,
                       password=password)
 
-# Retrive Data from database
-def retrive_data(name):
-    retrive_dict= r.hgetall(name)
-    retrive_series = pd.Series(retrive_dict)
-    retrive_series = retrive_series.apply(lambda x: np.frombuffer(x,dtype=np.float32))
-    index = retrive_series.index
+# Retrieve Data from database
+def retrieve_data(name):
+    retrieve_dict= r.hgetall(name)
+    retrieve_series = pd.Series(retrieve_dict)
+    retrieve_series = retrieve_series.apply(lambda x: np.frombuffer(x,dtype=np.float32))
+    index = retrieve_series.index
     index = list(map(lambda x: x.decode(), index))
-    retrive_series.index = index
-    retrive_df =  retrive_series.to_frame().reset_index()
-    retrive_df.columns = ['name_role','facial_features']
-    retrive_df[['Name','Role']] = retrive_df['name_role'].apply(lambda x: x.split('@')).apply(pd.Series)
-    return retrive_df[['Name','Role','facial_features']]
+    retrieve_series.index = index
+    retrieve_df =  retrieve_series.to_frame().reset_index()
+    retrieve_df.columns = ['name_role','facial_features']
+    retrieve_df[['Name','Role']] = retrieve_df['name_role'].apply(lambda x: x.split('@')).apply(pd.Series)
+    return retrieve_df[['Name','Role','facial_features']]
 
 
 # configure face analysis
@@ -205,3 +206,22 @@ class RegistrationForm:
         self.reset()
         
         return True
+    
+    def remove_data_in_redis_db(self,key,role):
+                # validation name
+                name='academy:register'
+                if key is not None:
+                    if key.strip() != '':
+                        key_to_del = str(f'{key}@{role}')
+                    else:
+                        return 'name_false'
+                else:
+                    return 'name_false'
+            
+                # step-4: save this into redis database
+                # redis hashes
+                r.hdel(name,key_to_del)
+                
+                self.reset()
+                
+                return True
